@@ -30,6 +30,7 @@ namespace DemoLibrary.Logic
         throw new ArgumentException("The value was not valid", "firstName");
       }
 
+      return output;
 
     }
 
