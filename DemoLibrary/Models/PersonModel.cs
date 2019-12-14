@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace DemoLibrary.Models
 {
-  public class Person : IPerson
+  public class PersonModel : IPersonModel
   {
-    public int Id { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
+    public string HeightText { get; set; }
   }
 }

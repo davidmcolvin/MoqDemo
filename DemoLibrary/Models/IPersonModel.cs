@@ -1,9 +1,9 @@
 ﻿namespace DemoLibrary.Models
 {
-  public interface IPerson
+  public interface IPersonModel
   {
     string FirstName { get; set; }
-    int Id { get; set; }
+    string HeightText { get; set; }
     string LastName { get; set; }
   }
 }
