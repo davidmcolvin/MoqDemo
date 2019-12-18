@@ -14,31 +14,29 @@ namespace DemoLibrary.Utilities
 {
   public class SqliteDataAccess : ISqliteDataAccess
   {
+    string _connectionString = ConfigurationManager.ConnectionStrings["Default"].ConnectionString;
+
     public List<T> LoadData<T>(string sql)
     {
-      using (IDbConnection connection = new SQLiteConnection(ConfigurationManager.ConnectionStrings["Default"].ConnectionString))
+      using (IDbConnection connection = new SQLiteConnection(_connectionString))
       {
         return connection.Query<T>(sql).ToList();
       }
     }
 
-    public void SaveData(IPersonModel person, string sql)
+    public void SaveData<T>(T model, string sql)
     {
-      using (IDbConnection connection = new SQLiteConnection(ConfigurationManager.ConnectionStrings["Default"].ConnectionString))
+      using (IDbConnection connection = new SQLiteConnection(_connectionString))
       {
-        List<IPersonModel> people = new List<IPersonModel>();
-        people.Add(person);
-
-        connection.Execute(sql, people);
+        connection.Execute(sql, model);
       }
     }
 
-    public void UpdateData(IPersonModel person, string sql)
+    public void UpdateData<T>(T model, string sql)
     {
-      var p = new DynamicParameters();
-      using (IDbConnection connection = new SQLiteConnection(ConfigurationManager.ConnectionStrings["Default"].ConnectionString))
+      using (IDbConnection connection = new SQLiteConnection(_connectionString))
       {
-        connection.Execute(sql, person);
+        connection.Execute(sql, model);
       }
     }
   }

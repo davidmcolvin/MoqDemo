@@ -43,6 +43,7 @@ namespace DemoLibrary.Logic
 
       if (height.isValid == true)
       {
+        output.HeightText = heightText;
         output.HeightInInches = height.heightInInches;
       }
       else
@@ -66,6 +67,14 @@ namespace DemoLibrary.Logic
       {
         output.Add(item);
       }
+
+      //foreach (var item in output)
+      //{
+      //  if (item.FirstName == "Tim")
+      //  {
+      //    item.FirstName = "Timothy";
+      //  }
+      //}
 
       return output;
     }

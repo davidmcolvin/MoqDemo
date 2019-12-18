@@ -1,5 +1,8 @@
-﻿using DemoLibrary.Logic;
+﻿using Autofac.Extras.Moq;
+using DemoLibrary.Logic;
 using DemoLibrary.Models;
+using DemoLibrary.Utilities;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,12 +32,13 @@ namespace MoqDemoTests.Logic
     }
 
     [Theory]
-    [InlineData("Tim", "Corey", "6'8\"")]
-    [InlineData("Charity", "Corey", "5'4\"")]
+    [InlineData("Tim", "Corey", "6'8\"", 80)]
+    [InlineData("Charity", "Corey", "5'4\"", 64)]
     public void CreatePerson_Successful(
       string firstName, 
       string lastName, 
-      string heightText)
+      string heightText,
+      int heightInInches)
     {
       PersonProcessor processor = new PersonProcessor(null);
 
@@ -43,6 +47,7 @@ namespace MoqDemoTests.Logic
         FirstName = firstName,
         LastName = lastName,
         HeightText = heightText,
+        HeightInInches = heightInInches,
         Id = 0
       };
 
@@ -52,6 +57,7 @@ namespace MoqDemoTests.Logic
       Assert.Equal(expected.FirstName, actual.FirstName);
       Assert.Equal(expected.LastName, actual.LastName);
       Assert.Equal(expected.HeightText, actual.HeightText);
+      Assert.Equal(expected.HeightInInches, actual.HeightInInches);
     }
 
     [Theory]
@@ -71,6 +77,89 @@ namespace MoqDemoTests.Logic
       {
         Assert.Equal(expectedInvalidParameter, argEx.ParamName);
       }
+    }
+
+    [Fact]
+    public void LoadPeople_ValidCall()
+    {
+      using (var mock = AutoMock.GetLoose())
+      {
+        mock.Mock<ISqliteDataAccess>()
+          .Setup(x => x.LoadData<PersonModel>("select * from Person"))
+          .Returns(GetSamplePeople());
+
+        var cls = mock.Create<PersonProcessor>();
+        var expected = GetSamplePeople();
+
+        var actual = cls.LoadPeople();
+
+        Assert.True(actual != null);
+        Assert.Equal(expected.Count, actual.Count);
+
+        for (int i = 0; i < expected.Count; i++)
+        {
+          Assert.Equal(expected[i].FirstName, actual[i].FirstName);
+          Assert.Equal(expected[i].LastName, actual[i].LastName);
+        }
+
+      }
+    }
+
+    [Fact]
+    public void SavePeople_ValidCall()
+    {
+      using (var mock = AutoMock.GetLoose())
+      {
+        var person = new PersonModel
+        {
+          Id = 1,
+          FirstName = "Tim",
+          LastName = "Corey",
+          HeightInInches = 80
+        };
+        var sql = "insert into Person (FirstName, LastName, HeightInInches) " +
+        "values (@FirstName, @LastName, @HeightInInches)";
+
+        mock.Mock<ISqliteDataAccess>()
+          .Setup(x => x.SaveData(person, sql));
+
+        var cls = mock.Create<PersonProcessor>();
+
+        cls.SavePerson(person);
+
+        mock.Mock<ISqliteDataAccess>()
+          .Verify(X => X.SaveData(person, sql), Times.Exactly(1));
+      }
+    }
+
+
+    private List<PersonModel> GetSamplePeople()
+    {
+      List<PersonModel> output = new List<PersonModel>
+      {
+        new PersonModel
+        {
+          FirstName = "Tim",
+          LastName = "Corey"
+        },
+        new PersonModel
+        {
+          FirstName = "Charity",
+          LastName = "Corey"
+        },
+        new PersonModel
+        {
+          FirstName = "Jon",
+          LastName = "Corey"
+        },
+        new PersonModel
+        {
+          FirstName = "Chris",
+          LastName = "Corey"
+        }
+      };
+
+      return output;
     }
 
   }

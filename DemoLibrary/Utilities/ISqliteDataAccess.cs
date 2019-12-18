@@ -9,8 +9,8 @@ namespace DemoLibrary.Utilities
 {
   public interface ISqliteDataAccess
   {
-    void UpdateData(IPersonModel person, string sql);
-    void SaveData(IPersonModel person, string sql);
+    void UpdateData<T>(T person, string sql);
+    void SaveData<T>(T person, string sql);
     List<T> LoadData<T>(string sql);
   }
 }
