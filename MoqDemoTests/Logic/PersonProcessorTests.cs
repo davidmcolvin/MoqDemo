@@ -110,7 +110,7 @@ namespace MoqDemoTests.Logic
     {
       using (var mock = AutoMock.GetLoose())
       {
-        var person = new PersonModel
+        IPersonModel person = new PersonModel
         {
           Id = 1,
           FirstName = "Tim",
