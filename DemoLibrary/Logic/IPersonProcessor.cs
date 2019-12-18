@@ -9,8 +9,8 @@ namespace DemoLibrary.Logic
 {
   public interface IPersonProcessor
   {
-    PersonModel CreatePerson(string firstName, string lastName, string heightText);
-    List<PersonModel> LoadPeople();
+    IPersonModel CreatePerson(string firstName, string lastName, string heightText);
+    List<IPersonModel> LoadPeople();
     void SavePerson(IPersonModel person);
     void UpdatePerson(IPersonModel person);
     (bool isValid, double heightInInches) ConvertHeightTextToInches(string heightText);

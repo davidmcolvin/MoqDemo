@@ -17,9 +17,9 @@ namespace DemoLibrary.Logic
       _database = database;
     }
 
-    public PersonModel CreatePerson(string firstName, string lastName, string heightText)
+    public IPersonModel CreatePerson(string firstName, string lastName, string heightText)
     {
-      PersonModel output = new PersonModel();
+      IPersonModel output = new PersonModel();
 
       if (ValidateName(firstName) == true)
       {
@@ -54,11 +54,20 @@ namespace DemoLibrary.Logic
 
     }
 
-    public List<PersonModel> LoadPeople()
+    public List<IPersonModel> LoadPeople()
     {
+      List<IPersonModel> output = new List<IPersonModel>();
+
       string sql = "select * from Person";
 
-      return _database.LoadData<PersonModel>(sql);
+      List<PersonModel> loadDataResults = _database.LoadData<PersonModel>(sql);
+
+      foreach (IPersonModel item in loadDataResults)
+      {
+        output.Add(item);
+      }
+
+      return output;
     }
 
     public void SavePerson(IPersonModel person)

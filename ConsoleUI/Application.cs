@@ -79,7 +79,7 @@ namespace ConsoleUI
       _personProcessor.SavePerson(person);
     }
 
-    private void DisplayPeople(List<PersonModel> list)
+    private void DisplayPeople(List<IPersonModel> list)
     {
       var people = _personProcessor.LoadPeople();
 
